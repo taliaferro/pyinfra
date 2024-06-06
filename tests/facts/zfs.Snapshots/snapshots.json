@@ -1,0 +1,9 @@
+{
+    "command": "zfs get -t snapshot -H all",
+    "output": ["tank/home@old	compression	lz4	-"],
+    "fact": {
+        "tank/home@old": {
+            "compression": "lz4",
+        },
+    }
+}

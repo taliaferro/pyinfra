@@ -1,0 +1,11 @@
+{
+    "command": "zfs get -t filesystem -H all",
+    "output": ["""
+tank/home	compression	lz4	-
+"""],
+    "fact": {
+        "tank/home": {
+            "compression": "lz4",
+        },
+    }
+}

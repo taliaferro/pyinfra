@@ -1,0 +1,9 @@
+{
+    "command": "zfs get -t volume -H all",
+    "output": ["tank/zvol1	compression	lz4	-"],
+    "fact": {
+        "tank/zvol1": {
+            "compression": "lz4",
+        },
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "command": "zfs get -H all",
+    "output": ["""tank	size	2.71T	-
+tank	feature@encryption	enabled	local
+tank	com.sun:auto_snapshot	true	-
+tank/home	com.sun:auto_snapshot	true	inherited from tank
+tank/home@old	encryption	off	default
+"""],
+    "fact": {
+        "tank": {
+            "size": "2.71T",
+            "feature@encryption": "enabled",
+            "com.sun:auto_snapshot": "true",
+        },
+        "tank/home": {
+            "com.sun:auto_snapshot": "true",
+        }
+        "tank/home@old": {
+            "encryption": "off",
+        }
+
+    }
+}
