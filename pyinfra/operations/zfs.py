@@ -11,7 +11,7 @@ from pyinfra.facts.zfs import Datasets, Snapshots
 def dataset(
     dataset_name,
     present=True,
-    recursive=True,
+    recursive=False,
     sparse=None,
     volume_size=None,
     properties={},
@@ -61,6 +61,8 @@ def dataset(
         if volume_size:
             args.append("-V {0}".format(volume_size))
 
+        args.sort() # dicts are unordered, so make sure the test results are deterministic
+
         yield "zfs create {0} {1}".format(" ".join(args), dataset_name)
 
     elif present and existing_dataset:
@@ -68,6 +70,7 @@ def dataset(
             "{0}={1}".format(prop, value)
             for prop, value in properties.items() - existing_dataset.items()
         ]
+        prop_args.sort()
         if prop_args:
             yield "zfs set {0} {1}".format(" ".join(prop_args), dataset_name)
         else:
