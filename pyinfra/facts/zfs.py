@@ -6,7 +6,7 @@ from pyinfra.api import FactBase, ShortFactBase
 
 
 def _process_zfs_props_table(output):
-    datasets = {}
+    datasets: dict = {}
     for line in output:
         dataset, property, value, source = tuple(line.split("\t"))
         if dataset not in datasets:
