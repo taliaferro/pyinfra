@@ -61,7 +61,7 @@ def dataset(
         if volume_size:
             args.append("-V {0}".format(volume_size))
 
-        args.sort() # dicts are unordered, so make sure the test results are deterministic
+        args.sort()  # dicts are unordered, so make sure the test results are deterministic
 
         yield "zfs create {0} {1}".format(" ".join(args), dataset_name)
 
