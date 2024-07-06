@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 
 from pyinfra.api import FactBase
@@ -84,3 +86,19 @@ class DockerNetwork(DockerSingleMixin):
     """
 
     docker_type = "network"
+
+
+class DockerVolumes(DockerFactBase):
+    """
+    Returns ``docker inspect`` output for all Docker volumes.
+    """
+
+    command = "docker volume inspect `docker volume ls -q`"
+
+
+class DockerVolume(DockerSingleMixin):
+    """
+    Returns ``docker inspect`` output for a single Docker container.
+    """
+
+    docker_type = "volume"

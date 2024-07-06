@@ -21,8 +21,8 @@ sys.path.append(".")
 click.disable_unicode_literals_warning = True  # type: ignore
 
 # Force line buffering
-sys.stdout = os.fdopen(sys.stdout.fileno(), "w", 1)
-sys.stderr = os.fdopen(sys.stderr.fileno(), "w", 1)
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
 
 
 def _handle_interrupt(signum, frame):

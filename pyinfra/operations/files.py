@@ -12,7 +12,7 @@ from datetime import timedelta
 from fnmatch import fnmatch
 from io import StringIO
 from pathlib import Path
-from typing import Union
+from typing import IO, Any, Union
 
 from jinja2 import TemplateRuntimeError, TemplateSyntaxError, UndefinedError
 
@@ -60,19 +60,19 @@ from .util.files import adjust_regex, ensure_mode_int, get_timestamp, sed_replac
 
 @operation()
 def download(
-    src,
-    dest,
-    user=None,
-    group=None,
-    mode=None,
-    cache_time=None,
+    src: str,
+    dest: str,
+    user: str | None = None,
+    group: str | None = None,
+    mode: str | None = None,
+    cache_time: int | None = None,
     force=False,
-    sha256sum=None,
-    sha1sum=None,
-    md5sum=None,
-    headers=None,
+    sha256sum: str | None = None,
+    sha1sum: str | None = None,
+    md5sum: str | None = None,
+    headers: dict[str, str] | None = None,
     insecure=False,
-    proxy=None,
+    proxy: str | None = None,
 ):
     """
     Download files from remote locations using ``curl`` or ``wget``.
@@ -123,8 +123,8 @@ def download(
         if cache_time:
             # Time on files is not tz-aware, and will be the same tz as the server's time,
             # so we can safely remove the tzinfo from the Date fact before comparison.
-            cache_time = host.get_fact(Date).replace(tzinfo=None) - timedelta(seconds=cache_time)
-            if info["mtime"] and info["mtime"] < cache_time:
+            ctime = host.get_fact(Date).replace(tzinfo=None) - timedelta(seconds=cache_time)
+            if info["mtime"] and info["mtime"] < ctime:
                 download = True
 
         if sha1sum:
@@ -227,11 +227,11 @@ def download(
 
 @operation()
 def line(
-    path,
-    line,
+    path: str,
+    line: str,
     present=True,
-    replace=None,
-    flags=None,
+    replace: str | None = None,
+    flags: list[str] | None = None,
     backup=False,
     interpolate_variables=False,
     escape_regex_characters=False,
@@ -427,10 +427,10 @@ def line(
 
 @operation()
 def replace(
-    path,
-    text=None,
-    replace=None,
-    flags=None,
+    path: str,
+    text: str | None = None,
+    replace: str | None = None,
+    flags: list[str] | None = None,
     backup=False,
     interpolate_variables=False,
     match=None,  # deprecated
@@ -501,15 +501,15 @@ def replace(
 
 @operation()
 def sync(
-    src,
-    dest,
-    user=None,
-    group=None,
-    mode=None,
-    dir_mode=None,
+    src: str,
+    dest: str,
+    user: str | None = None,
+    group: str | None = None,
+    mode: str | None = None,
+    dir_mode: str | None = None,
     delete=False,
-    exclude=None,
-    exclude_dir=None,
+    exclude: str | list[str] | tuple[str] | None = None,
+    exclude_dir: str | list[str] | tuple[str] | None = None,
     add_deploy_dir=True,
 ):
     """
@@ -652,7 +652,7 @@ def show_rsync_warning():
 
 
 @operation(is_idempotent=False)
-def rsync(src, dest, flags=["-ax", "--delete"]):
+def rsync(src: str, dest: str, flags: list[str] | None = None):
     """
     Use ``rsync`` to sync a local directory to the remote system. This operation will actually call
     the ``rsync`` binary on your system.
@@ -667,6 +667,8 @@ def rsync(src, dest, flags=["-ax", "--delete"]):
         global arguments.
     """
 
+    if flags is None:
+        flags = ["-ax", "--delete"]
     show_rsync_warning()
 
     try:
@@ -696,8 +698,8 @@ def _create_remote_dir(remote_filename, user, group):
     is_idempotent=False,
 )
 def get(
-    src,
-    dest,
+    src: str,
+    dest: str,
     add_deploy_dir=True,
     create_local_dir=False,
     force=False,
@@ -756,11 +758,11 @@ def get(
 
 @operation()
 def put(
-    src,
-    dest,
-    user=None,
-    group=None,
-    mode=None,
+    src: str | IO[Any],
+    dest: str,
+    user: str | None = None,
+    group: str | None = None,
+    mode: int | str | bool | None = None,
     add_deploy_dir=True,
     create_remote_dir=True,
     force=False,
@@ -821,6 +823,7 @@ def put(
 
     # Assume string filename
     else:
+        assert isinstance(src, (str, Path))
         # Add deploy directory?
         if add_deploy_dir and state.cwd:
             src = os.path.join(state.cwd, src)
@@ -835,7 +838,7 @@ def put(
             raise IOError("No such file: {0}".format(local_file))
 
     if mode is True:
-        if os.path.isfile(local_file):
+        if isinstance(local_file, str) and os.path.isfile(local_file):
             mode = get_path_permissions_mode(local_file)
         else:
             logger.warning(
@@ -849,6 +852,7 @@ def put(
     remote_file = host.get_fact(File, path=dest)
 
     if not remote_file and bool(host.get_fact(Directory, path=dest)):
+        assert isinstance(src, str)
         dest = unix_path_join(dest, os.path.basename(src))
         remote_file = host.get_fact(File, path=dest)
 
@@ -905,7 +909,15 @@ def put(
 
 
 @operation()
-def template(src, dest, user=None, group=None, mode=None, create_remote_dir=True, **data):
+def template(
+    src: str | IO[Any],
+    dest: str,
+    user: str | None = None,
+    group: str | None = None,
+    mode: str | None = None,
+    create_remote_dir=True,
+    **data,
+):
     '''
     Generate a template using jinja2 and write it to the remote system.
 
@@ -1055,16 +1067,16 @@ def _raise_or_remove_invalid_path(fs_type, path, force, force_backup, force_back
 
 @operation()
 def link(
-    path,
-    target=None,
+    path: str,
+    target: str | None = None,
     present=True,
-    user=None,
-    group=None,
+    user: str | None = None,
+    group: str | None = None,
     symbolic=True,
     create_remote_dir=True,
     force=False,
     force_backup=True,
-    force_backup_dir=None,
+    force_backup_dir: str | None = None,
 ):
     """
     Add/remove/update links.
@@ -1162,16 +1174,16 @@ def link(
 
 @operation()
 def file(
-    path,
+    path: str,
     present=True,
-    user=None,
-    group=None,
-    mode=None,
+    user: str | None = None,
+    group: str | None = None,
+    mode: int | str | None = None,
     touch=False,
     create_remote_dir=True,
     force=False,
     force_backup=True,
-    force_backup_dir=None,
+    force_backup_dir: str | None = None,
 ):
     """
     Add/remove/update files.
@@ -1264,15 +1276,15 @@ def file(
 
 @operation()
 def directory(
-    path,
+    path: str,
     present=True,
-    user=None,
-    group=None,
-    mode=None,
+    user: str | None = None,
+    group: str | None = None,
+    mode: int | str | None = None,
     recursive=False,
     force=False,
     force_backup=True,
-    force_backup_dir=None,
+    force_backup_dir: str | None = None,
     _no_check_owner_mode=False,
     _no_fail_on_link=False,
 ):
@@ -1365,7 +1377,7 @@ def directory(
 
 
 @operation()
-def flags(path, flags=None, present=True):
+def flags(path: str, flags: list[str] | None = None, present=True):
     """
     Set/clear file flags.
 
@@ -1414,18 +1426,18 @@ def flags(path, flags=None, present=True):
 
 @operation()
 def block(
-    path,
-    content=None,
+    path: str,
+    content: str | list[str] | None = None,
     present=True,
-    line=None,
+    line: str | None = None,
     backup=False,
     escape_regex_characters=False,
     try_prevent_shell_expansion=False,
     before=False,
     after=False,
-    marker=None,
-    begin=None,
-    end=None,
+    marker: str | None = None,
+    begin: str | None = None,
+    end: str | None = None,
 ):
     """
     Ensure content, surrounded by the appropriate markers, is present (or not) in the file.
@@ -1573,6 +1585,7 @@ def block(
                 f"\n{the_block}\n{here}",
             )
         elif current == []:  # markers not found and have a pattern to match (not start or end)
+            assert isinstance(line, str)
             regex = adjust_regex(line, escape_regex_characters)
             print_before = "{ print }" if before else ""
             print_after = "{ print }" if after else ""

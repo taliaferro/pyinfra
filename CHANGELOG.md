@@ -1,4 +1,4 @@
-# v3.0.beta1
+# v3.0.beta4
 
 Welcome to pyinfra v3! This version is the biggest overhaul of pyinfra since it was created back in 2015. Most v2 deployment code should be automatically compatible, but as always be aware. Major changes:
 

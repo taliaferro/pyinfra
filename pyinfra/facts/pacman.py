@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+import shlex
+
 from pyinfra.api import FactBase
 
 from .util.packaging import parse_packages
@@ -21,9 +25,9 @@ class PacmanUnpackGroup(FactBase):
 
     default = list
 
-    def command(self, name):
+    def command(self, package):
         # Accept failure here (|| true) for invalid/unknown packages
-        return 'pacman -S --print-format "%n" {0} || true'.format(name)
+        return 'pacman -S --print-format "%n" {0} || true'.format(shlex.quote(package))
 
     def process(self, output):
         return output

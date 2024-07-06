@@ -40,7 +40,7 @@ yield StringCommand("echo", "Shell!", _sudo=True)
 Operations can also call other operations using ``yield from`` syntax:
 
 ```py
-yield from files.file(
+yield from files.file._inner(
     path="/some/file",
     ...,
 )

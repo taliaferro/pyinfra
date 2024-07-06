@@ -1,11 +1,11 @@
 # Installation
 
-## Pipx
+## Pip
 
 It is recommended to install pyinfra using `pip`:
 
 ```sh
-pip install pyinfra
+pip install pyinfra --pre
 ```
 
 ## Windows

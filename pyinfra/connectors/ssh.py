@@ -122,14 +122,18 @@ class SSHConnector(BaseConnector):
     .. code:: python
 
         hosts = (
-            [
-                "my-host-1.net",
-                "my-host-2.net",
-            ],
-            {
-                "ssh_username": "ssh-user",
-            },
+            ["my-host-1.net", "my-host-2.net"],
+            {"ssh_username": "ssh-user"},
         )
+
+    Multiple hosts with different SSH usernames:
+
+    .. code:: python
+
+        hosts = [
+            ("my-host-1.net", {"ssh_username": "ssh-user"}),
+            ("my-host-2.net", {"ssh_username": "other-user"}),
+        ]
     """
 
     handles_execution = True
