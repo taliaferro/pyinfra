@@ -5,7 +5,7 @@
 It is recommended to install pyinfra using `pip`:
 
 ```sh
-pip install pyinfra --pre
+pip install pyinfra
 ```
 
 ## Windows

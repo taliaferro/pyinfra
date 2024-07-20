@@ -12,6 +12,7 @@ pytest
 
 echo "# Git tag & push..."
 git tag -a "v$VERSION" -m "v$VERSION"
+git push
 git push --tags
 
 echo "Clear existing build/dist..."
