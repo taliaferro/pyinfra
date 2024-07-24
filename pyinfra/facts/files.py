@@ -312,8 +312,7 @@ class FindFilesBase(FactBase):
     default = list
     type_flag: str
 
-    @staticmethod
-    def process(output):
+    def process(self, output):
         return output
 
     def command(self, path, quote_path=True):
@@ -353,7 +352,8 @@ class Flags(FactBase):
     Returns a list of the file flags set for the specified file or directory.
     """
 
-    requires_command = "chflags"  # don't try to retrieve them if we can't set them
+    def requires_command(self, path) -> str:
+        return "chflags"  # don't try to retrieve them if we can't set them
 
     def command(self, path):
         return make_formatted_string_command(

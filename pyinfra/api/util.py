@@ -241,7 +241,7 @@ def log_error_or_warning(
     )
 
 
-def log_host_command_error(host: "Host", e: Exception, timeout: int = 0) -> None:
+def log_host_command_error(host: "Host", e: Exception, timeout: int | None = 0) -> None:
     if isinstance(e, timeout_error):
         logger.error(
             "{0}{1}".format(

@@ -36,32 +36,33 @@ def _is_inventory_group(key: str, value: Any):
     return all(isinstance(item, ALLOWED_HOST_TYPES) for item in value)
 
 
-def _get_group_data(dirname: str):
+def _get_group_data(dirname_or_filename: str):
     group_data = {}
-    group_data_directory = path.join(dirname, "group_data")
 
-    logger.debug("Checking possible group_data directory: %s", dirname)
+    logger.debug("Checking possible group_data at: %s", dirname_or_filename)
 
-    if path.exists(group_data_directory):
-        files = listdir(group_data_directory)
+    if path.exists(dirname_or_filename):
+        if path.isfile(dirname_or_filename):
+            files = [dirname_or_filename]
+        else:
+            files = [path.join(dirname_or_filename, file) for file in listdir(dirname_or_filename)]
 
         for file in files:
             if not file.endswith(".py"):
                 continue
 
-            group_data_file = path.join(group_data_directory, file)
             group_name = path.basename(file)[:-3]
 
-            logger.debug("Looking for group data in: %s", group_data_file)
+            logger.debug("Looking for group data in: %s", file)
 
             # Read the files locals into a dict
-            attrs = exec_file(group_data_file, return_locals=True)
+            attrs = exec_file(file, return_locals=True)
             keys = attrs.get("__all__", attrs.keys())
 
             group_data[group_name] = {
                 key: value
                 for key, value in attrs.items()
-                if key in keys and not key.startswith("_")
+                if key in keys and not key.startswith("__")
             }
 
     return group_data
@@ -255,10 +256,10 @@ def make_inventory_from_files(
 
     possible_group_data_folders = []
     if cwd:
-        possible_group_data_folders.append(cwd)
+        possible_group_data_folders.append(path.join(cwd, "group_data"))
     inventory_dirname = path.abspath(path.dirname(inventory_filename))
     if inventory_dirname != cwd:
-        possible_group_data_folders.append(inventory_dirname)
+        possible_group_data_folders.append(path.join(inventory_dirname, "group_data"))
 
     if group_data_directories:
         possible_group_data_folders.extend(group_data_directories)
@@ -269,6 +270,7 @@ def make_inventory_from_files(
         for folder in possible_group_data_folders:
             for group_name, data in _get_group_data(folder).items():
                 group_data[group_name].update(data)
+                logger.debug("Adding data to group %s: %r", group_name, data)
 
     # For each group load up any data
     for name, hosts in groups.items():

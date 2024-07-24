@@ -1,3 +1,13 @@
+# v3.0.1
+
+- Switch to `command -v` not `which` in `server.Which` fact (@lemmi)
+- Fix detection of xbps in `server.packages` operation (@romain-dartigues)
+- Fix argument typo in operations doc (@scoufman)
+- Add expanded note about detected changes + hidden side effects during execution
+- Fix missing global arguments in group data files
+- Fix `--group-data` CLI argument behaviour
+- Remove unused/dead `--quiet` flag
+
 # v3.0
 
 Welcome to pyinfra v3! This version is the biggest overhaul of pyinfra since it was created back in 2015. Most v2 deployment code should be automatically compatible, but as always be aware. Major changes:
