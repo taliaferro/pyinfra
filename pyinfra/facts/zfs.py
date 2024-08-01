@@ -16,7 +16,8 @@ def _process_zfs_props_table(output):
 
 
 class Pools(FactBase):
-    command = "zpool get -H all"
+    def command(self):
+        return "zpool get -H all"
 
     @staticmethod
     def process(output):
@@ -24,7 +25,8 @@ class Pools(FactBase):
 
 
 class Datasets(FactBase):
-    command = "zfs get -H all"
+    def command(self):
+        return "zfs get -H all"
 
     @staticmethod
     def process(output):
