@@ -412,6 +412,7 @@ class Host:
         remove_any_sudo_askpass_file(self)
 
         self.state.trigger_callbacks("host_disconnect", self)
+        self.connected = False
 
     def run_shell_command(self, *args, **kwargs) -> tuple[bool, CommandOutput]:
         """
