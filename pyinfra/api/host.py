@@ -406,7 +406,7 @@ class Host:
         # Disconnect is an optional function for connectors if needed
         disconnect_func = getattr(self.connector, "disconnect", None)
         if disconnect_func:
-            return disconnect_func()
+            disconnect_func()
 
         # TODO: consider whether this should be here!
         remove_any_sudo_askpass_file(self)
