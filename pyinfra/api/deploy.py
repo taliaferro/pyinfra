@@ -64,7 +64,7 @@ def deploy(name: Optional[str] = None, data_defaults=None):
         raise PyinfraError(
             (
                 "The `deploy` decorator must be called, ie `@deploy()`, "
-                "see: https://docs.pyinfra.com/en/3.x/compatibility.html#upgrading-pyinfra-from-2-x-3-x"
+                "see: https://docs.pyinfra.com/en/3.x/compatibility.html#upgrading-pyinfra-from-2-x-3-x"  # noqa
             )
         )
 
