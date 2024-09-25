@@ -32,7 +32,7 @@ def parse_apt_repo(name):
         "type": matches.group(1),
         "url": matches.group(3),
         "distribution": matches.group(4),
-        "components": set(matches.group(5).split()),
+        "components": list(matches.group(5).split()),
     }
 
 
