@@ -307,6 +307,36 @@ class LsbRelease(FactBase):
         return items
 
 
+class OsRelease(FactBase):
+    """
+    Returns a dictionary of release information stored in ``/etc/os-release``.
+
+    .. code:: python
+
+        {
+          "name": "EndeavourOS",
+          "pretty_name": "EndeavourOS",
+          "id": "endeavouros",
+          "id_like": "arch",
+          "build_id": "2024.06.25",
+          ...
+        }
+    """
+
+    def command(self):
+        return "cat /etc/os-release"
+
+    def process(self, output):
+        items = {}
+
+        for line in output:
+            if "=" in line:
+                key, value = line.split("=", 1)
+                items[key.strip().lower()] = value.strip().strip('"')
+
+        return items
+
+
 class Sysctl(FactBase):
     """
     Returns a dictionary of sysctl settings and values.
