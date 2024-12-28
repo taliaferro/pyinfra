@@ -288,7 +288,7 @@ def network(
 
         yield handle_docker(
             resource="network",
-            command="create",
+            command="remove",
             network=network,
         )
 
