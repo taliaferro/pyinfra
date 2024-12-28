@@ -231,8 +231,8 @@ def network(
     """
     Manage docker networks
 
-    + network_name: Image name
-    + driver: Container image and tag ex: nginx:alpine
+    + network: Network name
+    + driver: Network driver ex: bridge or overlay
     + gateway: IPv4 or IPv6 Gateway for the master subnet
     + ip_range: Allocate container ip from a sub-range
     + ipam_driver: IP Address Management Driver
@@ -251,8 +251,7 @@ def network(
 
         # Create Docker network
         docker.network(
-            name="Create nginx network",
-            network_name="nginx",
+            network="nginx",
             attachable=True,
             present=True,
         )
