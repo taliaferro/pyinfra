@@ -58,13 +58,20 @@ def _start_docker_image(image_name):
 
 class DockerConnector(BaseConnector):
     """
-    The docker connector allows you to build Docker images or modify running
-    Docker containers. You can pass either an image name or existing container ID:
+    The Docker connector allows you to use pyinfra to create new Docker images or modify running
+    Docker containers.
 
-    + Image - will create a new container from the image, execute operations \
-        against it, save into a new Docker image and remove the container
-    + Existing container ID - will execute operations against the running \
-        container, leaving it running
+    .. note::
+
+        The Docker connector allows pyinfra to target Docker containers as inventory and is
+        unrelated to the :doc:`../operations/docker` & :doc:`../facts/docker`.
+
+    You can pass either an image name or existing container ID:
+
+    + Image - will create a new container from the image, execute operations against it, save into \
+        a new Docker image and remove the container
+    + Existing container ID - will execute operations against the running container, leaving it \
+        running
 
     .. code:: shell
 
@@ -76,6 +83,10 @@ class DockerConnector(BaseConnector):
 
         # Execute against a running container
         pyinfra @docker/2beb8c15a1b1 ...
+
+    The Docker connector is great for testing pyinfra operations locally, rather than connecting to
+    a remote host over SSH each time. This gives you a fast, local-first devloop to iterate on when
+    writing deploys, operations or facts.
     """
 
     handles_execution = True

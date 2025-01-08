@@ -1,3 +1,9 @@
+"""
+Facts about Docker containers, volumes and networks. These facts give you information from the view
+of the current inventory host. See the :doc:`../connectors/docker` to use Docker containers as
+inventory directly.
+"""
+
 from __future__ import annotations
 
 import json

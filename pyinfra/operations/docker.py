@@ -1,5 +1,7 @@
 """
-Manager Docker Containers, Volumes and Networks
+Manager Docker containers, volumes and networks. These operations allow you to manage Docker from
+the view of the current inventory host. See the :doc:`../connectors/docker` to use Docker containers
+as inventory directly.
 """
 
 from pyinfra import host
