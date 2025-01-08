@@ -106,6 +106,7 @@ class Crontab(FactBase[CrontabFile]):
     Returns a dictionary of CrontabFile.
 
     .. code:: python
+
         # CrontabFile.items()
         {
             "/path/to/command": {

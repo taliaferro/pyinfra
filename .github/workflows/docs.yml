@@ -35,7 +35,7 @@ jobs:
           pip install 'jinja2<3.1'
 
       - name: Generate documentation
-        run: scripts/build_public_docs.sh
+        run: scripts/build-public-docs.sh
         env:
           PYTHONPATH: '.'
 

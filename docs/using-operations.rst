@@ -1,7 +1,10 @@
 Using Operations
 ================
 
-Operations tell pyinfra what to do, for example the ``server.shell`` operation instructs pyinfra to execute a shell command. Most operations define state rather than actions - so instead of "start this service" you say "this service should be running" - pyinfra will make changes if needed.
+.. admonition:: What are operations?
+    :class: tip
+
+    Operations tell pyinfra what to do, for example the ``server.shell`` operation instructs pyinfra to execute a shell command. Most operations define state rather than actions - so instead of *start this service* you say *this service should be running* - pyinfra will make changes if needed.
 
 For example, these two operations will ensure that user ``pyinfra`` exists with home directory ``/home/pyinfra``, and that the ``/var/log/pyinfra.log`` file exists and is owned by that user:
 
@@ -105,6 +108,15 @@ See :doc:`facts` for a full list of available facts and arguments.
 .. Important::
     Only use immutable facts in deploy code (installed OS, Arch, etc) unless you are absolutely sure they will not change. See: `using host facts <deploy-process.html#using-host-facts>`_.
 
+Fact Errors
+~~~~~~~~~~~
+
+When facts fail due to an error the host will be marked as failed just as it would when an operation fails. This can be avoided by passing the ``_ignore_errors`` argument:
+
+.. code:: python
+
+    if host.get_fact(LinuxName, _ignore_errors=True):
+        ...
 
 The ``inventory`` Object
 ------------------------
