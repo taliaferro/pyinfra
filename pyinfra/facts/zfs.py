@@ -1,5 +1,5 @@
 """
-Manage ZFS filesystems.
+Gather information about ZFS filesystems.
 """
 
 from pyinfra.api import FactBase, ShortFactBase
@@ -15,7 +15,7 @@ def _process_zfs_props_table(output):
     return datasets
 
 
-class Pools(FactBase):
+class ZfsPools(FactBase):
     def command(self):
         return "zpool get -H all"
 
@@ -23,7 +23,7 @@ class Pools(FactBase):
         return _process_zfs_props_table(output)
 
 
-class Datasets(FactBase):
+class ZfsDatasets(FactBase):
     def command(self):
         return "zfs get -H all"
 
@@ -31,22 +31,30 @@ class Datasets(FactBase):
         return _process_zfs_props_table(output)
 
 
-class Filesystems(ShortFactBase):
-    fact = Datasets
+class ZfsFilesystems(ShortFactBase):
+    fact = ZfsDatasets
 
     def process_data(self, data):
         return {name: props for name, props in data.items() if props.get("type") == "filesystem"}
 
 
-class Snapshots(ShortFactBase):
-    fact = Datasets
+class ZfsSnapshots(ShortFactBase):
+    fact = ZfsDatasets
 
     def process_data(self, data):
         return {name: props for name, props in data.items() if props.get("type") == "snapshot"}
 
 
-class Volumes(ShortFactBase):
-    fact = Datasets
+class ZfsVolumes(ShortFactBase):
+    fact = ZfsDatasets
 
     def process_data(self, data):
         return {name: props for name, props in data.items() if props.get("type") == "volume"}
+
+
+# TODO: remove these in v4! Or flip the convention and remove all the other fact prefixes!
+Pools = ZfsPools
+Datasets = ZfsDatasets
+Filesystems = ZfsFilesystems
+Snapshots = ZfsSnapshots
+Volumes = ZfsVolumes
