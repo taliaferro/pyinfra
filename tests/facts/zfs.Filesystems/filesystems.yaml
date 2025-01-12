@@ -1,14 +1,14 @@
 command: zfs get -H all
-output:
-  - "tank\ttype\tfilesystem\t-"
-  - "tank\tsize\t2.71T\t-"
-  - "tank\tfeature@encryption\tenabled\tlocal"
-  - "tank\tcom.sun:auto_snapshot\ttrue\t-"
-  - "tank/home\ttype\tfilesystem\t-"
-  - "tank/home\tcom.sun:auto_snapshot\ttrue\tinherited from tank"
-  - "tank/home@old\ttype\tsnapshot\t-"
-  - "tank/home@old\tencryption\toff\tdefault"
-  - "tank/myvol\ttype\tvolume\t-"
+output: |
+  tank	type	filesystem	-
+  tank	size	2.71T	-
+  tank	feature@encryption	enabled	local
+  tank	com.sun:auto_snapshot	true	-
+  tank/home	type	filesystem	-
+  tank/home	com.sun:auto_snapshot	true	inherited from tank
+  tank/home@old	type	snapshot	-
+  tank/home@old	encryption	off	default
+  tank/myvol	type	volume	-
 fact:
   tank:
     type: filesystem

@@ -1,7 +1,7 @@
 command: zpool get -H all
-output:
-  - "tank\tcompression\tlz4\t-"
-  - "tank\tashift\t12\tlocal"
+output: |
+  tank	compression	lz4	-
+  tank	ashift	12	local
 fact:
   tank:
     compression: lz4
