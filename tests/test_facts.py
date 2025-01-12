@@ -70,7 +70,11 @@ def make_fact_tests(folder_name):
                         ),
                     )
 
-            data = fact.process(test_data["output"])
+            command_output = test_data["output"]
+            if isinstance(command_output, str):
+                command_output = command_output.splitlines()
+
+            data = fact.process(command_output)
             if short_fact:
                 data = short_fact.process_data(data)
 
